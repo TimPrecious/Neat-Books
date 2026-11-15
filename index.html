@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Neat Books</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#BFE9F5;--paper:#fff;--ink:#111;--grey:#444;--gold:#FFC83D;--pink:#FF8FB1;--mint:#7BE0B0;--suds:#fff;--line:#CFE3EA;--up:#0B7A4B;--down:#D63B3B;--bd:#111;--sh:#111;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1A24;--paper:#1A2B38;--ink:#F4F8FA;--grey:#B5C6D0;--suds:#1A2B38;--line:#2B4050;--up:#5CE0A0;--down:#FF8A80;--bd:#8FB3C7;--sh:#05090C}}
+:root[data-theme="dark"]{--bg:#0E1A24;--paper:#1A2B38;--ink:#F4F8FA;--grey:#B5C6D0;--suds:#1A2B38;--line:#2B4050;--up:#5CE0A0;--down:#FF8A80;--bd:#8FB3C7;--sh:#05090C}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font:700 16px/1.4 Nunito,system-ui,sans-serif}
+h2,h3,.f,button,.big{font-family:'Baloo 2','Trebuchet MS',sans-serif}
+#app{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:16px 16px 130px}
+header{display:flex;align-items:center;gap:12px}
+header h1{margin:0;font:800 34px/1 'Baloo 2',sans-serif;text-shadow:3px 3px 0 var(--gold)}
+header small{color:var(--grey);font-weight:800}
+#mas{width:80px;height:88px;flex:none;cursor:pointer;animation:bob 3s ease-in-out infinite}
+#mas rect{fill:var(--pink);stroke:#111;stroke-width:4}
+#mas>circle:nth-of-type(3){stroke:#111}
+.drum{transform-origin:50px 64px;animation:spin 10s linear infinite}
+#mas.fast .drum{animation-duration:.5s}
+#mas.hop{animation:hop .6s}
+@keyframes bob{50%{transform:translateY(-5px) rotate(2deg)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes hop{30%{transform:translateY(-20px) rotate(-8deg) scale(1.08)}60%{transform:translateY(0) rotate(5deg)}}
+.bub{position:fixed;bottom:-90px;border-radius:50%;border:3px solid var(--paper);opacity:.8;pointer-events:none;z-index:0;animation:rise linear infinite}
+@keyframes rise{to{transform:translate(30px,-115vh)}}
+section{display:none}
+section.on{display:block;animation:pop .5s cubic-bezier(.3,1.5,.5,1)}
+@keyframes pop{from{opacity:0;transform:translateY(26px) scale(.92) rotate(-1deg)}}
+.card,.stat,.ind,.tip{background:var(--paper);border:3px solid var(--bd);border-radius:24px;box-shadow:0 5px 0 var(--sh)}
+.card{padding:16px;margin-top:16px}
+.goal,#home>.card:first-child,#owed>.card:first-child{color:#111}
+.goal,#owed>.card:first-child{background:var(--gold)}
+#home>.card:first-child{background:var(--mint)}
+.goal small,#home>.card:first-child small{color:#111}
+.goal{border-radius:34px 34px 34px 8px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.track{height:24px;border-radius:99px;background:var(--paper);border:3px solid #111;overflow:hidden;margin:10px 0}
+.fill{height:100%;width:0;background:repeating-linear-gradient(-45deg,var(--pink) 0 10px,#FF6F9C 10px 20px);background-size:28px 28px;border-right:3px solid #111;transition:width 1s cubic-bezier(.3,1.4,.5,1);animation:str 1s linear infinite}
+@keyframes str{to{background-position:28px 0}}
+.big{font-size:42px;font-weight:800;line-height:1.05}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.stat{padding:12px;color:#111}
+.stat small,.ind small{display:block;font-weight:800}
+.stat small{color:#111}.ind small{color:var(--grey)}
+.stat:nth-child(1){background:var(--mint);transform:rotate(-2deg)}
+.stat:nth-child(2){background:var(--pink);transform:rotate(1.5deg)}
+.stat:nth-child(3){background:var(--gold);transform:rotate(-1deg)}
+.stat b{font:800 18px 'Baloo 2',sans-serif}
+.stat b.dn{color:#B3261E}
+.up{color:var(--up)}.dn{color:var(--down)}
+h3{margin:26px 0 10px;font-size:22px;font-weight:800}
+.badges{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.bd{text-align:center;font-size:12px;line-height:1.2;opacity:.5;filter:grayscale(1)}
+.bd i{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 6px;border-radius:50%;background:var(--paper);font-size:27px;font-style:normal;border:3px solid var(--bd)}
+.bd.on{opacity:1;filter:none}
+.bd.on i{background:var(--gold);box-shadow:0 4px 0 var(--sh);transform:rotate(-8deg);border-color:#111}
+.bd.on:nth-child(even) i{transform:rotate(8deg)}
+.bd.on:hover i{animation:wig .5s}
+@keyframes wig{25%{transform:rotate(-14deg) scale(1.1)}75%{transform:rotate(14deg) scale(1.1)}}
+button{font-weight:700;cursor:pointer;color:inherit}
+:focus-visible{outline:4px solid var(--pink);outline-offset:2px}
+.mini,.go{background:var(--gold);color:#111;border:3px solid #111;box-shadow:0 4px 0 #111;transition:transform .1s,box-shadow .1s}
+.mini{border-radius:14px;padding:6px 12px;font-size:16px}
+.go{width:100%;margin-top:16px;background:var(--pink);border-radius:22px;padding:14px;font-size:24px;font-weight:800}
+.mini:active,.go:active{transform:translateY(4px);box-shadow:0 0 0 #111}
+.seg{display:flex;gap:6px;background:var(--paper);border:3px solid var(--bd);border-radius:99px;padding:5px;margin-top:12px;box-shadow:0 4px 0 var(--sh)}
+.seg button{flex:1;border:0;background:none;border-radius:99px;padding:8px 6px;font-size:17px}
+.seg button.on{background:var(--gold);color:#111;animation:wig2 .35s}
+@keyframes wig2{40%{transform:scale(1.08)}}
+label{display:block;margin:16px 0 6px;color:var(--ink);font-weight:800;font-size:15px}
+input{width:100%;font:800 17px Nunito,sans-serif;padding:12px 14px;border-radius:18px;border:3px solid var(--bd);background:var(--paper);color:var(--ink)}
+input:focus{outline:none;box-shadow:0 4px 0 var(--pink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{border:3px solid var(--bd);background:var(--paper);border-radius:99px;padding:5px 14px;font-size:16px}
+.chips button.on{background:var(--mint);color:#111;border-color:#111;box-shadow:0 3px 0 #111;transform:translateY(-2px) rotate(-2deg)}
+.err{color:var(--down);min-height:22px;margin-top:8px;font-weight:800}
+.shake{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:2px dashed var(--bd)}
+.item small{display:block;color:var(--grey)}
+.item .r{text-align:right}
+.empty{text-align:center;padding:28px 10px;color:var(--grey)}
+.chart{display:flex;gap:6px;align-items:flex-end;margin-top:6px}
+.col{flex:1;text-align:center;font-size:11px;min-width:0}
+.pair{display:flex;gap:3px;align-items:flex-end;justify-content:center;height:120px}
+.b{width:44%;max-width:16px;border:2px solid #111;border-radius:7px 7px 2px 2px;transform-origin:bottom;animation:grow .8s cubic-bezier(.3,1.6,.5,1) both}
+.b.s{background:var(--gold)}.b.x{background:var(--pink)}
+@keyframes grow{from{transform:scaleY(0)}}
+.legend{font-size:13px;color:var(--grey);margin-top:8px}
+.legend i{display:inline-block;width:12px;height:12px;border:2px solid #111;border-radius:4px;margin:0 4px 0 8px}
+.inds{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ind{padding:12px}
+.ind b{font:800 22px 'Baloo 2',sans-serif}
+.tip{padding:12px 14px;margin-top:10px}
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));width:min(480px,calc(100% - 24px));display:flex;gap:4px;background:var(--paper);border:3px solid var(--bd);border-radius:30px;box-shadow:0 5px 0 var(--sh);padding:6px;z-index:5}
+nav button{flex:1;border:0;background:none;font-size:14px;line-height:1.1;padding:6px 0;border-radius:22px;color:var(--ink)}
+nav button span{display:block;font-size:22px}
+nav button.on{background:var(--gold);color:#111}
+nav button.on span{animation:wig2 .5s}
+#toast{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:50%;transform:translate(-50%,-100px);background:var(--gold);color:#111;border:3px solid #111;box-shadow:0 4px 0 #111;padding:10px 18px;border-radius:99px;font:800 17px 'Baloo 2',sans-serif;transition:transform .45s cubic-bezier(.3,1.6,.5,1);z-index:50;max-width:92%;text-align:center}
+#toast.show{transform:translate(-50%,0)}
+.cf{position:fixed;width:9px;height:13px;border:2px solid #111;border-radius:3px;pointer-events:none;z-index:99;animation:cf 1s ease-out forwards}
+@keyframes cf{to{transform:translate(var(--dx),calc(var(--dy) + 170px)) rotate(var(--r));opacity:0}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}.cf,.bub{display:none}}
+textarea{width:100%;min-height:100px;font:700 15px Nunito,sans-serif;padding:12px 14px;border-radius:18px;border:3px solid var(--bd);background:var(--paper);color:var(--ink);resize:vertical}
+textarea:focus{outline:none;box-shadow:0 4px 0 var(--pink)}
+#th{margin-left:auto;width:48px;height:48px;border-radius:50%;border:3px solid var(--bd);background:var(--paper);box-shadow:0 4px 0 var(--sh);font-size:22px;padding:0;transition:transform .2s,box-shadow .2s}
+#th:active{transform:translateY(4px) rotate(40deg);box-shadow:none}
+body,.card,.stat,.ind,.tip,input,textarea,nav,.seg{transition:background-color .4s,color .4s,border-color .4s}
+nav button{font-size:12.5px}
+#mas{overflow:visible}
+#mas .closed,#mas .zmouth,#mas .zz{display:none}
+#mas.sleep{animation:snore 4s ease-in-out infinite;filter:saturate(.75) brightness(.93)}
+#mas.sleep .eye,#mas.sleep .smile{display:none}
+#mas.sleep .closed,#mas.sleep .zmouth,#mas.sleep .zz{display:inline}
+#mas.sleep .drum{animation:none}
+.zz{font:800 17px 'Baloo 2',sans-serif;fill:var(--ink);opacity:0;animation:zup 3.2s ease-in infinite}
+.zz:nth-of-type(2){animation-delay:1s;font-size:13px}
+.zz:nth-of-type(3){animation-delay:2s;font-size:10px}
+@keyframes snore{50%{transform:scale(1.05,1.03)}}
+@keyframes zup{0%{opacity:0;transform:translate(0,8px)}30%{opacity:1}100%{opacity:0;transform:translate(12px,-22px)}}
+@media(prefers-reduced-motion:reduce){#mas.sleep .zz{opacity:1}}
+</style></head>
+<body>
+<div id="app">
+<header>
+<svg id="mas" viewBox="0 0 100 110" aria-hidden="true">
+<rect x="8" y="6" width="84" height="98" rx="20" fill="var(--ink)"/>
+<circle cx="24" cy="21" r="4" fill="var(--gold)"/><circle cx="37" cy="21" r="4" fill="var(--up)"/>
+<circle cx="50" cy="64" r="31" fill="var(--paper)" stroke="var(--gold)" stroke-width="5"/>
+<g class="drum"><circle cx="50" cy="64" r="22" fill="#BFE3F0"/><circle cx="38" cy="56" r="5" fill="#fff"/><circle cx="60" cy="72" r="7" fill="#fff"/><circle cx="62" cy="54" r="3.5" fill="#fff"/></g>
+<circle class="eye" cx="42" cy="62" r="3" fill="#000"/><circle class="eye" cx="58" cy="62" r="3" fill="#000"/>
+<path class="smile" d="M42 71q8 8 16 0" stroke="#000" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path class="closed" d="M37 62q5 5 10 0M53 62q5 5 10 0" stroke="#000" stroke-width="3" fill="none" stroke-linecap="round"/>
+<ellipse class="zmouth" cx="50" cy="74" rx="3.5" ry="3" fill="#000"/>
+<text class="zz" x="78" y="20">z</text><text class="zz" x="86" y="10">z</text><text class="zz" x="92" y="2">z</text>
+</svg>
+<div><small id="hi"></small><h1>Neat Books</h1></div>
+<button id="th" data-x="flip" aria-label="Switch between light and dark mode">🌙</button>
+</header>
+<section id="home"></section>
+<section id="add"></section>
+<section id="owed"></section>
+<section id="reports"></section>
+<section id="data"></section>
+</div>
+<nav>
+<button data-a="nav" data-v="home"><span>🏠</span>Home</button>
+<button data-a="nav" data-v="add"><span>➕</span>Add</button>
+<button data-a="nav" data-v="owed"><span>🧾</span>Owed</button>
+<button data-a="nav" data-v="reports"><span>📊</span>Reports</button>
+<button data-a="nav" data-v="data"><span>⚙️</span>Data</button>
+</nav>
+<div id="toast" role="status"></div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+// Storage layer: swap these two functions for a database later (Firebase, Supabase, Django...)
+const store={load(){try{return JSON.parse(localStorage.getItem('neat-books'))}catch(e){return null}},save(s){try{localStorage.setItem('neat-books',JSON.stringify(s))}catch(e){}}};
+let S=store.load()||{e:[],goal:200000,xp:0,badges:{},collected:0};
+const N=n=>(n<0?'-':'')+'₦'+Math.round(Math.abs(n)).toLocaleString('en-NG');
+const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const TODAY=()=>iso(new Date()),ago=n=>{const d=new Date();d.setDate(d.getDate()-n);return d};
+const IN=['Wash and fold','Ironing and pressing','Commercial laundry','Stain removal'],OUT=['Detergent','Fuel','Rent','Wages','Electricity and water','Other'];
+const NAMES=['Fresh Start','Sock Sorter','Crisp Keeper','Suds Pro','Neat Master','Laundry Legend'];
+const sum=(l,t)=>l.filter(e=>e.type==t).reduce((a,e)=>a+e.amt,0);
+const mon=(o=0)=>{const d=new Date();d.setDate(1);d.setMonth(d.getMonth()-o);return iso(d).slice(0,7)};
+const ofMonth=ym=>S.e.filter(e=>e.date.slice(0,7)==ym);
+const owedList=()=>S.e.filter(e=>e.type=='in'&&!e.paid);
+const lvl=()=>Math.floor(Math.sqrt(S.xp/15))+1;
+function streak(){const d=new Set(S.e.map(e=>e.logged));let i=d.has(TODAY())?0:1,n=0;while(d.has(iso(ago(i)))){n++;i++}return n}
+const B=[
+['first','🧺','First record',()=>S.e.length>=1],
+['ten','📒','10 records',()=>S.e.length>=10],
+['s3','🔥','3-day streak',()=>streak()>=3],
+['s7','🌟','7-day streak',()=>streak()>=7],
+['goal','🏆','Goal smasher',()=>{const m=ofMonth(mon());return sum(m,'in')-sum(m,'out')>=S.goal}],
+['bust','💪','Debt Buster',()=>S.collected>=5],
+['clean','✨','Zero owed',()=>S.e.filter(e=>e.type=='in').length>=3&&!owedList().length],
+['marg','💎','30% margin',()=>{const m=ofMonth(mon()),s=sum(m,'in');return s>0&&(s-sum(m,'out'))/s>=.3}]];
+function badgeCheck(){const got=[];B.forEach(([id,ic,nm,t])=>{if(!S.badges[id]&&t()){S.badges[id]=TODAY();S.xp+=30;got.push(ic+' '+nm)}});return got}
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2600)}
+function burst(x=innerWidth/2,y=innerHeight/3){const c=['#C99A49','#16875A','#4AA8D8','#fff','#D8544A'];for(let i=0;i<30;i++){const p=document.createElement('i'),a=Math.random()*6.28,d=60+Math.random()*130;p.className='cf';p.style.cssText=`left:${x}px;top:${y}px;background:${c[i%5]};--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d-70}px;--r:${Math.random()*720}deg`;document.body.appendChild(p);setTimeout(()=>p.remove(),1100)}}
+function hop(){const m=$('#mas');m.classList.remove('fast','hop');void m.getBoundingClientRect();m.classList.add('fast','hop');setTimeout(()=>m.classList.remove('fast','hop'),1200)}
+const grow=()=>requestAnimationFrame(()=>requestAnimationFrame(()=>$$('[data-w]').forEach(f=>f.style.width=f.dataset.w+'%')));
+let F={type:'in',amt:'',cat:'',cust:'',note:'',paid:true,date:TODAY()},R='d',armed=null;
+
+function home(){
+const m=ofMonth(mon()),s=sum(m,'in'),x=sum(m,'out'),p=s-x,o=owedList().reduce((a,e)=>a+e.amt,0),L=lvl(),lo=15*(L-1)**2,hi=15*L*L,pc=Math.max(0,Math.min(100,p/S.goal*100)),st=streak();
+$('#hi').textContent=greet();
+$('#home').innerHTML=`
+<div class="card"><div class="row"><b class="f">Level ${L} · ${NAMES[Math.min(L-1,5)]}</b><small>${S.xp} XP</small></div>
+<div class="track"><div class="fill" data-w="${(S.xp-lo)/(hi-lo)*100}"></div></div><small>${hi-S.xp} XP to level ${L+1}</small></div>
+<div class="card goal"><b class="f">This month’s profit goal</b><div class="big">${N(p)}</div><div>of ${N(S.goal)} · ${Math.round(pc)}%</div>
+<div class="track"><div class="fill" data-w="${pc}"></div></div>
+<div>${pc>=100?'Goal smashed! Keep going.':pc>=50?'Over halfway. Keep it up.':p<=0?'Add sales to get on the board.':'Every order moves the bar.'}</div>
+<div class="row" style="margin-top:12px"><input id="gi" type="number" inputmode="numeric" placeholder="New goal in ₦" aria-label="New goal"><button class="mini" data-a="goal">Set goal</button></div></div>
+<div class="stats"><div class="stat"><small>Sales</small><b>${N(s)}</b></div><div class="stat"><small>Spent</small><b>${N(x)}</b></div><div class="stat" data-a="nav" data-v="owed" style="cursor:pointer"><small>Owed to you</small><b class="${o?'dn':''}">${N(o)}</b></div></div>
+<div class="card row"><b class="f">🔥 ${st}-day streak</b><small>${st?'Log something every day to keep it':'Log a record today to start'}</small></div>
+${S.e.length?'':'<div class="empty">Nothing here yet.<br>Add your first sale to start leveling up.<br><br><button class="mini" data-a="nav" data-v="add">Add a record</button></div>'}
+<h3>Badges</h3><div class="badges">${B.map(([id,ic,nm])=>`<div class="bd ${S.badges[id]?'on':''}"><i>${ic}</i>${nm}</div>`).join('')}</div>`;grow()}
+
+function addView(){
+const cats=F.type=='in'?IN:OUT,rec=[...S.e].sort((a,b)=>b.id-a.id).slice(0,8);
+$('#add').innerHTML=`
+<div class="seg"><button data-a="type" data-t="in" class="${F.type=='in'?'on':''}">💰 Sale</button><button data-a="type" data-t="out" class="${F.type=='out'?'on':''}">🧾 Expense</button></div>
+<label>Amount (₦)</label><input data-f="amt" type="number" inputmode="decimal" placeholder="0" value="${F.amt}">
+<label>Category</label><div class="chips">${cats.map(c=>`<button data-a="cat" data-c="${c}" class="${F.cat==c?'on':''}">${c}</button>`).join('')}</div>
+${F.type=='in'?`<label>Customer</label><input data-f="cust" placeholder="Name" value="${F.cust}">
+<div class="seg"><button data-a="paid" data-p="1" class="${F.paid?'on':''}">Paid now</button><button data-a="paid" data-p="0" class="${F.paid?'':'on'}">Pay after delivery</button></div>`:''}
+<label>Date</label><input data-f="date" type="date" value="${F.date}">
+<label>Note (optional)</label><input data-f="note" placeholder="Anything to remember" value="${F.note}">
+<div class="err" id="err"></div>
+<button class="go" data-a="save">Save record</button>
+<h3>Recent records</h3>
+${rec.length?rec.map(e=>`<div class="item"><div><b>${e.type=='in'?(e.cust||'Sale'):e.cat}</b><small>${e.type=='in'?e.cat+(e.paid?'':' · unpaid'):(e.note||'Expense')} · ${e.date}</small></div><div class="r"><b class="${e.type=='in'?'up':'dn'}">${e.type=='in'?'+':'-'}${N(e.amt)}</b><button class="mini" style="background:var(--line);color:var(--ink);margin-left:8px" data-a="del" data-id="${e.id}">${armed==e.id?'Sure?':'✕'}</button></div></div>`).join(''):'<div class="empty">Your records will show up here.</div>'}`}
+
+function owedView(){
+const l=owedList().sort((a,b)=>a.date<b.date?-1:1),t=l.reduce((a,e)=>a+e.amt,0);
+$('#owed').innerHTML=`<div class="card goal"><b class="f">Customers who owe you</b><div class="big">${N(t)}</div><div>${l.length} unpaid ${l.length==1?'order':'orders'}. Collect to earn 20 XP each.</div></div>
+${l.length?l.map(e=>`<div class="item"><div><b>${e.cust||'Customer'}</b><small>${e.cat} · ${Math.max(0,Math.floor((Date.now()-new Date(e.date))/864e5))} days waiting</small></div><div class="r"><b>${N(e.amt)}</b><br><button class="mini" data-a="collect" data-id="${e.id}">Got paid</button></div></div>`).join(''):'<div class="empty">Nobody owes you anything. Neat and tidy! ✨<br><small>Log a sale as “Pay after delivery” and it will appear here.</small></div>'}`}
+
+function buckets(r){const out=[];
+if(r=='d')for(let i=6;i>=0;i--){const d=ago(i),k=iso(d);out.push([d.toLocaleDateString('en',{weekday:'short'}),k,k])}
+if(r=='w')for(let i=7;i>=0;i--){const en=ago(i*7),f=new Date(en);f.setDate(f.getDate()-6);out.push([f.getDate()+'/'+(f.getMonth()+1),iso(f),iso(en)])}
+if(r=='m')for(let i=5;i>=0;i--){const d=new Date();d.setDate(1);d.setMonth(d.getMonth()-i);const k=iso(d).slice(0,7);out.push([d.toLocaleDateString('en',{month:'short'}),k+'-01',k+'-31'])}
+return out}
+const sh=n=>(n<0?'-':'')+(Math.abs(n)>=1000?(Math.abs(n)/1000).toFixed(Math.abs(n)>=10000?0:1)+'k':Math.round(Math.abs(n)));
+function reports(){
+const bk=buckets(R).map(([l,f,t])=>{const li=S.e.filter(e=>e.date>=f&&e.date<=t);return[l,sum(li,'in'),sum(li,'out')]}),mx=Math.max(1,...bk.flatMap(b=>[b[1],b[2]]));
+const m=ofMonth(mon()),pm=ofMonth(mon(1)),s=sum(m,'in'),x=sum(m,'out'),ps=sum(pm,'in'),sales=m.filter(e=>e.type=='in'),paid=sales.filter(e=>e.paid).reduce((a,e)=>a+e.amt,0),o=owedList().reduce((a,e)=>a+e.amt,0);
+const mg=s?(s-x)/s*100:null,avg=sales.length?s/sales.length:null,gr=ps?(s-ps)/ps*100:null,co=s?paid/s*100:null;
+const ex={};m.filter(e=>e.type=='out').forEach(e=>ex[e.cat]=(ex[e.cat]||0)+e.amt);
+const tc=Object.entries(ex).sort((a,b)=>b[1]-a[1])[0],tcs=tc?tc[1]/x*100:0;
+const wd=[0,0,0,0,0,0,0],DN=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+S.e.filter(e=>e.type=='in').forEach(e=>wd[new Date(e.date+'T12:00').getDay()]+=e.amt);
+const bw=S.e.length>=5?wd.indexOf(Math.max(...wd)):-1,pc=v=>v==null?'—':Math.round(v)+'%';
+const tips=[];
+if(o>0)tips.push(`${N(o)} is still owed to you. Collecting it is the fastest way to grow your cash.`);
+if(gr!=null)tips.push(gr<0?`Sales are down ${Math.round(-gr)}% on last month. Try a promotion before your next pickup day.`:`Sales are up ${Math.round(gr)}% on last month. Keep doing what works.`);
+if(tc&&tcs>40)tips.push(`${tc[0]} is ${Math.round(tcs)}% of your spending. Compare suppliers or prices.`);
+if(bw>=0)tips.push(`${DN[bw]} is your strongest sales day. Promote offers just before it.`);
+if(mg!=null&&mg<20)tips.push('Your profit margin is under 20%. Check your prices against your costs.');
+if(!tips.length)tips.push('Log a few more records and I will point out growth opportunities.');
+$('#reports').innerHTML=`<div class="seg"><button data-a="range" data-r="d" class="${R=='d'?'on':''}">7 days</button><button data-a="range" data-r="w" class="${R=='w'?'on':''}">8 weeks</button><button data-a="range" data-r="m" class="${R=='m'?'on':''}">6 months</button></div>
+<div class="card"><div class="chart">${bk.map(([l,a,b])=>`<div class="col"><div class="pair"><div class="b s" style="height:${a/mx*100}%;min-height:${a?3:0}px"></div><div class="b x" style="height:${b/mx*100}%;min-height:${b?3:0}px"></div></div>${l}<br><b class="${a-b>=0?'up':'dn'}">${sh(a-b)}</b></div>`).join('')}</div>
+<div class="legend"><i style="background:var(--gold)"></i>Sales<i style="background:var(--pink)"></i>Spent · profit below each bar (₦)</div></div>
+<h3>Growth indicators (this month)</h3>
+<div class="inds"><div class="ind"><small>Profit margin</small><b>${pc(mg)}</b></div><div class="ind"><small>Average order</small><b>${avg==null?'—':N(avg)}</b></div>
+<div class="ind"><small>Sales vs last month</small><b class="${gr==null?'':gr>=0?'up':'dn'}">${gr==null?'—':(gr>=0?'+':'')+Math.round(gr)+'%'}</b></div><div class="ind"><small>Collected so far</small><b>${pc(co)}</b></div>
+<div class="ind"><small>Biggest cost</small><b>${tc?tc[0]:'—'}</b>${tc?`<small>${Math.round(tcs)}% of spending</small>`:''}</div><div class="ind"><small>Best sales day</small><b>${bw>=0?DN[bw]:'—'}</b></div></div>
+<h3>Opportunities</h3>${tips.map(t=>`<div class="tip">💡 ${t}</div>`).join('')}`}
+
+function render(){home();addView();owedView();reports();dataView()}
+function commit(){store.save(S);render()}
+function show(v){$$('section').forEach(s=>s.classList.toggle('on',s.id==v));$$('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v==v));scrollTo(0,0);armed=null;render()}
+function save(btn){
+const amt=parseFloat(F.amt);
+if(!(amt>0)||!F.cat){$('#err').textContent='Enter an amount and pick a category.';btn.classList.remove('shake');void btn.offsetWidth;btn.classList.add('shake');return}
+const first=!S.e.some(e=>e.logged==TODAY()),L0=lvl(),type=F.type;
+S.e.push({id:Date.now(),type,amt,cat:F.cat,note:F.note,cust:type=='in'?F.cust:'',paid:type=='out'?true:F.paid,date:F.date||TODAY(),logged:TODAY()});
+S.xp+=10+(first?5:0);
+const bs=badgeCheck(),r=btn.getBoundingClientRect();
+F.amt=F.note=F.cust=F.cat='';F.date=TODAY();
+hop();burst(r.left+r.width/2,r.top);
+toast('Saved! +'+(10+(first?5:0))+' XP'+(bs.length?' · '+bs[0]+' unlocked':'')+(lvl()>L0?' · Level '+lvl()+'!':''));
+if(lvl()>L0||bs.length)setTimeout(()=>burst(),250);
+commit()}
+document.addEventListener('click',ev=>{
+const t=ev.target.closest('[data-a]');if(!t)return;const a=t.dataset.a,d=t.dataset;
+if(a!='del')armed=null;
+if(a=='nav')show(d.v);
+else if(a=='type'){F.type=d.t;F.cat='';addView()}
+else if(a=='cat'){F.cat=d.c;addView()}
+else if(a=='paid'){F.paid=d.p=='1';addView()}
+else if(a=='save')save(t);
+else if(a=='range'){R=d.r;reports()}
+else if(a=='goal'){const v=parseFloat($('#gi').value);if(v>0){S.goal=v;toast('Goal set to '+N(v));commit()}}
+else if(a=='del'){if(armed==d.id){S.e=S.e.filter(e=>e.id!=d.id);armed=null;store.save(S);render()}else{armed=d.id;addView()}}
+else if(a=='collect'){const e=S.e.find(e=>e.id==d.id);if(!e)return;const r=t.getBoundingClientRect(),L0=lvl();e.paid=true;e.paidOn=TODAY();S.collected++;S.xp+=20;const bs=badgeCheck();hop();burst(r.left+r.width/2,r.top);toast('Got paid! +20 XP'+(bs.length?' · '+bs[0]+' unlocked':'')+(lvl()>L0?' · Level '+lvl()+'!':''));commit()}
+});
+document.addEventListener('input',ev=>{const f=ev.target.dataset.f;if(f)F[f]=ev.target.value});
+$('#mas').addEventListener('click',()=>{if(late()){toast('Shh… Suds is sleeping 💤');return}hop();toast('Suds says: keep your records neat!')});
+// ---- Theme: Auto = dark from 6pm to 6am, light otherwise. Light/Dark = fixed choice ----
+const hr=()=>new Date().getHours(),night=()=>hr()>=18||hr()<6,late=()=>hr()>=21||hr()<5;
+const greet=()=>late()?'Suds is sleeping 💤':hr()<12?'Good morning':hr()<17?'Good afternoon':'Good evening';
+let ovr=null;
+const prefT=()=>{try{return localStorage.getItem('neat-theme')||'auto'}catch(e){return'auto'}};
+const effTheme=()=>document.documentElement.dataset.theme||'light';
+function syncTh(){const b=$('#th');if(b)b.textContent=effTheme()=='dark'?'☀️':'🌙'}
+function applyTheme(){const p=prefT();let t=p;if(p=='auto'){if(ovr&&ovr.p!=night())ovr=null;t=ovr?ovr.t:(night()?'dark':'light')}document.documentElement.dataset.theme=t;syncTh()}
+function setTheme(t){try{t=='auto'?localStorage.removeItem('neat-theme'):localStorage.setItem('neat-theme',t)}catch(e){}ovr=null;applyTheme()}
+function mood(){const m=$('#mas');if(m)m.classList.toggle('sleep',late());const h=$('#hi');if(h)h.textContent=greet()}
+function tick(){applyTheme();mood()}
+setInterval(tick,30000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});
+// ---- Import / export ----
+let P=null;
+const HEAD='date,type,amount,category,customer,paid,note',q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+const clean=v=>(v||'').replace(/[<>"]/g,'').trim(),key=e=>[e.date,e.type,e.amt,e.cat,e.cust].join('|');
+const fd=(y,mo,d)=>(+mo>=1&&+mo<=12&&+d>=1&&+d<=31)?y+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0'):null;
+function pdate(v){v=(v||'').trim();let m;
+if(m=v.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/))return fd(m[1],m[2],m[3]);
+if(m=v.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{2,4})/))return fd(m[3].length<3?2000+ +m[3]:m[3],m[2],m[1]);
+const d=new Date(v);return isNaN(d)?null:iso(d)}
+function parseCSV(t){const r=[];let row=[],c='',qt=false;
+for(let i=0;i<t.length;i++){const ch=t[i];
+if(qt){if(ch=='"'){if(t[i+1]=='"'){c+='"';i++}else qt=false}else c+=ch}
+else if(ch=='"')qt=true;
+else if(ch==','||ch=='\t'){row.push(c);c=''}
+else if(ch=='\n'||ch=='\r'){if(ch=='\r'&&t[i+1]=='\n')i++;row.push(c);r.push(row);row=[];c=''}
+else c+=ch}
+if(c||row.length){row.push(c);r.push(row)}return r.filter(x=>x.some(v=>v.trim()))}
+function check(text){
+const rows=parseCSV((text||'').replace(/^\uFEFF/,''));
+if(!rows.length){toast('Choose a file or paste some rows first');return}
+let cols=['date','type','amount','category','customer','paid','note'],start=0;
+if(/date/i.test(rows[0][0]||'')){cols=rows[0].map(h=>h.trim().toLowerCase().replace(/[^a-z]/g,''));start=1}
+const seen=new Set(S.e.map(key)),out=[],bad=[];let dup=0;
+rows.slice(start).forEach((r,j)=>{const n=j+start+1,g=c=>r[cols.indexOf(c)]||'';
+const d=pdate(g('date')),ty=g('type').trim().toLowerCase(),amt=parseFloat(g('amount').replace(/[₦,\s]/g,'')),type=/^(s|i)/.test(ty)?'in':/^(e|o|x|c)/.test(ty)?'out':null;
+if(!d)return bad.push([n,'date not understood']);
+if(!type)return bad.push([n,'type should be sale or expense']);
+if(!(amt>0))return bad.push([n,'amount should be a number above 0']);
+const pd=g('paid').trim().toLowerCase();
+const e={id:Date.now()*1000+j,type,amt,cat:clean(g('category'))||'Other',note:clean(g('note')),cust:type=='in'?clean(g('customer')):'',paid:type=='out'||!/^(n|0|f|u|owe)/.test(pd),date:d,logged:d};
+if(seen.has(key(e)))return dup++;seen.add(key(e));out.push(e)});
+P={rows:out,bad,dup};dataView()}
+function dl(name,text){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv'}));a.download=name;document.body.appendChild(a);a.click();a.remove()}
+function dataView(){
+const pref=prefT();
+let pv='';
+if(P){const si=P.rows.filter(e=>e.type=='in'),ex=P.rows.filter(e=>e.type=='out');
+pv=`<div class="tip">${P.rows.length} records ready: ${si.length} sales (${N(sum(si,'in'))}) and ${ex.length} expenses (${N(sum(ex,'out'))}).${P.dup?' '+P.dup+' already in the app, skipped.':''}${P.bad.length?'<br><b>'+P.bad.length+' rows need fixing:</b><br>'+P.bad.slice(0,6).map(b=>'Row '+b[0]+': '+b[1]).join('<br>'):''}</div>${P.rows.length?`<button class="go" data-x="imp">Import ${P.rows.length} records</button>`:''}`}
+$('#data').innerHTML=`
+<h3 style="margin-top:6px">Look</h3>
+<div class="seg">${[['light','☀️ Light'],['dark','🌙 Dark'],['auto','🌗 Auto']].map(([k,l])=>`<button data-x="theme" data-t="${k}" class="${pref==k?'on':''}">${l}</button>`).join('')}</div>
+<small style="display:block;margin-top:8px;color:var(--grey)">Auto turns dark at 6pm and back to light at 6am. Suds goes to sleep from 9pm to 5am.</small>
+<h3>Import your records</h3>
+<div class="card" style="margin-top:0"><b class="f">Move your notebook records in (Sept 2026 to today)</b>
+<ol style="padding-left:20px;margin:8px 0"><li>Download the template and open it in Excel or Google Sheets.</li><li>Type your notebook records in, one row per sale or expense.</li><li>Save as CSV and choose the file below, or paste the rows straight from the sheet.</li></ol>
+<button class="mini" data-x="tpl">Download template</button>
+<small style="display:block;margin-top:8px;color:var(--grey)">Columns: date (2026-09-14 or 14/09/2026), type (sale or expense), amount, category, customer, paid (yes or no), note.</small>
+<label>Choose a CSV file</label><input type="file" id="fl" accept=".csv,.tsv,.txt">
+<label>Or paste rows here</label><textarea data-f="paste" placeholder="2026-09-14, sale, 15000, Wash and fold, Mrs Ada, yes, pickup">${F.paste||''}</textarea>
+<button class="mini" style="margin-top:10px" data-x="check">Check my rows</button>${pv}</div>
+<h3>Backup</h3>
+<div class="card" style="margin-top:0">Your records live in this browser only. Save a copy now and then. You can import the backup file back here.<br><button class="mini" style="margin-top:10px" data-x="exp">Download backup</button></div>
+<h3>Start over</h3>
+<button class="mini" data-x="clr">${armed=='clr'?'Tap again to delete everything':'Clear all records'}</button>`}
+document.addEventListener('click',ev=>{
+const t=ev.target.closest('[data-x]');if(!t)return;const x=t.dataset.x;if(x!='clr')armed=null;
+if(x=='theme'){setTheme(t.dataset.t);dataView()}
+else if(x=='flip'){const nt=effTheme()=='dark'?'light':'dark';if(prefT()=='auto'){ovr={t:nt,p:night()};applyTheme()}else setTheme(nt);if($('#data.on'))dataView()}
+else if(x=='tpl')dl('neat-books-template.csv',HEAD+'\n2026-09-01,sale,15000,Wash and fold,Example customer,yes,Example row - delete me\n2026-09-02,expense,8000,Detergent,,yes,Example row - delete me\n2026-09-03,sale,22000,Commercial laundry,Example hotel,no,Example row - delete me');
+else if(x=='check')check(F.paste);
+else if(x=='imp'&&P){const n=P.rows.length;S.e.push(...P.rows);const bs=badgeCheck();P=null;F.paste='';hop();burst();toast('Imported '+n+' records'+(bs.length?' · '+bs[0]+' unlocked':''));commit()}
+else if(x=='exp'){dl('neat-books-backup-'+TODAY()+'.csv',HEAD+'\n'+[...S.e].sort((a,b)=>a.date<b.date?-1:1).map(e=>[e.date,e.type=='in'?'sale':'expense',e.amt,q(e.cat),q(e.cust),e.paid?'yes':'no',q(e.note)].join(',')).join('\n'));toast('Backup downloaded')}
+else if(x=='clr'){if(armed=='clr'){S.e=[];S.xp=0;S.badges={};S.collected=0;armed=null;toast('All records cleared');commit()}else{armed='clr';dataView()}}
+});
+document.addEventListener('change',ev=>{if(ev.target.id!='fl'||!ev.target.files[0])return;const r=new FileReader();r.onload=()=>check(r.result);r.readAsText(ev.target.files[0])});
+for(let i=0;i<8;i++){const b=document.createElement('i'),z=22+Math.random()*50;b.className='bub';b.style.cssText=`width:${z}px;height:${z}px;left:${Math.random()*95}%;animation-duration:${10+Math.random()*10}s;animation-delay:-${Math.random()*16}s`;document.body.appendChild(b)}
+applyTheme();mood();show('home');
+</script>
+</body></html>
